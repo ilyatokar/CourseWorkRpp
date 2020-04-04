@@ -1,9 +1,14 @@
 package sample.Chess;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -17,6 +22,10 @@ public class ChessController {
     @FXML
     private GridPane gridpane;
 
+    private ObservableList<StepsModel> stepsData = FXCollections.observableArrayList();
+    @FXML
+    private TableView<StepsModel> chessTable;
+
     private Button[][] arrButton;
     private int[][] position;
 
@@ -25,8 +34,8 @@ public class ChessController {
     private Image pawnBlack = new Image(getClass().getResourceAsStream("/sample/Chess/images/pawn_black.png"));
     private Image ferz = new Image(getClass().getResourceAsStream("/sample/Chess/images/elephant_white.png"));
 
-    public void InitGameChess(){
-        gridpane.setDisable(false);
+    @FXML
+    public void initialize(){
         arrButton = new Button[3][3];
         arrButton[0][0] = button00;
         arrButton[0][1] = button01;
@@ -37,6 +46,23 @@ public class ChessController {
         arrButton[2][0] = button20;
         arrButton[2][1] = button21;
         arrButton[2][2] = button22;
+
+        TableColumn<StepsModel, ImageView> figuraColumn = new TableColumn<StepsModel, ImageView>("Фигура");
+        figuraColumn.setCellValueFactory(new PropertyValueFactory<StepsModel, ImageView>("figuraColumn"));
+        chessTable.getColumns().add(figuraColumn);
+
+        TableColumn<StepsModel, String> startColumn = new TableColumn<StepsModel, String>("Клетка");
+        startColumn.setCellValueFactory(new PropertyValueFactory<StepsModel, String>("startColumn"));
+        chessTable.getColumns().add(startColumn);
+
+        TableColumn<StepsModel, String> endColumn = new TableColumn<StepsModel, String>("Клетка");
+        endColumn.setCellValueFactory(new PropertyValueFactory<StepsModel, String>("endColumn"));
+        chessTable.getColumns().add(endColumn);
+
+    }
+
+    public void InitGameChess(){
+        gridpane.setDisable(false);
 
         position = new int[3][3];
         position[0][0] = 2;
@@ -66,6 +92,7 @@ public class ChessController {
                     arrButton[i][j].setGraphic(new ImageView(ferz));
             }
         }
+
     }
 
     public void SelectAndMoveFigure(int x, int y){
@@ -85,10 +112,15 @@ public class ChessController {
                 position[selectX][selectY] = 0;
                 position[x][y] = figure;
                 UpdateDesk();
+                setDataTable(figure, selectX, selectY, moveX, moveY);
+                System.out.println(stepsData.size());
+                System.out.println(figure +" "+ selectX +" "+ selectY +" "+ moveX +" "+ moveY);
+                chessTable.setItems(stepsData);
             }
             ClearSelect();
-            СheckEndGame();
         }
+
+        СheckEndGame();
     }
 
     public void ClearSelect (){
@@ -105,7 +137,6 @@ public class ChessController {
                 arrButton[i][j].setGraphic(null);
             }
         }
-        gridpane.setDisable(true);
     }
 
     public void СheckEndGame(){
@@ -118,14 +149,29 @@ public class ChessController {
         ){
             AlertSuccess();
             ClearGame();
+            stepsData.clear();
+            System.out.println(stepsData.size());
+            gridpane.setDisable(true);
         }
     }
-    public void AlertSuccess(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Игра завершена !!!");
-        alert.setHeaderText(null);
-        alert.setContentText("Игра завершена !!!");
-        alert.showAndWait();
+
+    private void setDataTable(int figure, int startX, int startY, int endX, int endY) {
+        String startCell = "", endCell = "";
+        ImageView img = null;
+        String a = "A";
+        String b = "B";
+        String c = "C";
+
+        if(startY == 0) startCell += a;
+        else if(startY == 1) startCell += b;
+        else startCell += c;
+
+        if(endY == 0) endCell += a;
+        else if(endY == 1) endCell += b;
+        else endCell += c;
+        if(figure == 1) img = new ImageView(pawnBlack);
+        else if(figure == 2) img = new ImageView(ferz);
+        stepsData.add(new StepsModel(img, startCell+(startX+1), endCell+(endX+1)));
     }
 
     public void button00(){
@@ -154,5 +200,13 @@ public class ChessController {
     }
     public void button22(){
         SelectAndMoveFigure(2,2);
+    }
+
+    public void AlertSuccess(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Игра завершена !!!");
+        alert.setHeaderText(null);
+        alert.setContentText("Фигуры переставлены, конец игры.");
+        alert.showAndWait();
     }
 }
