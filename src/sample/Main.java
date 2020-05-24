@@ -13,6 +13,8 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Курсовая работа вариант 13");
         primaryStage.setScene(new Scene(root));
+        //primaryStage.setMaximized(true);
+        //primaryStage.setFullScreen(true);
         primaryStage.setResizable(false);
         primaryStage.show();
     }

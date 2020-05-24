@@ -5,6 +5,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class TicTacToeController {
     @FXML
@@ -15,10 +19,15 @@ public class TicTacToeController {
     private Button[][] arrButton;
     private int[][] position;
 
+    @FXML
+    private GridPane gridpane;
+
     private Integer selectX, selectY, moveX, moveY, figure;
 
     private Image circle = new Image(getClass().getResourceAsStream("/sample/TicTacToe/images/circle.png"));
     private Image cross = new Image(getClass().getResourceAsStream("/sample/TicTacToe/images/cross.png"));
+
+    private int winner = 0;
 
     @FXML
     public void initialize(){
@@ -35,17 +44,18 @@ public class TicTacToeController {
     }
 
     public void InitTictactoe(){
+        gridpane.setDisable(false);
         position = new int[3][3];
-        position[0][0] = 1;
-        position[0][1] = 1;
-        position[0][2] = 1;
+        position[0][0] = 0;
+        position[0][1] = 0;
+        position[0][2] = 0;
         position[1][0] = 0;
         position[1][1] = 0;
         position[1][2] = 0;
-        position[2][0] = 2;
-        position[2][1] = 2;
-        position[2][2] = 2;
-
+        position[2][0] = 0;
+        position[2][1] = 0;
+        position[2][2] = 0;
+        StartGame();
         UpdateDesk();
     }
 
@@ -63,10 +73,86 @@ public class TicTacToeController {
                     arrButton[i][j].setGraphic(new ImageView(cross));
             }
         }
-
     }
 
     public void SelectAndMoveFigure(int x, int y){
+        if( position[x][y] == 0){
+            arrButton[x][y].setGraphic(new ImageView(cross));
+            position[x][y] = 2;
+            if(CheckEndGame(1)){
+                winner = 1;
+                EndGame();
+                return;
+            }
+            else if (CheckEndGame(2)){
+                winner = 2;
+                EndGame();
+                return;
+            }
+            ComputerRunning();
+            if(CheckEndGame(1)){
+                winner = 1;
+                EndGame();
+                return;
+            }
+            else if (CheckEndGame(2)){
+                winner = 2;
+                EndGame();
+                return;
+            }
+        }
+
+    }
+
+    public void ComputerRunning(){
+        //существует методо getGraphic возвращает node c помощью него можно проверять пустые позиции
+        ArrayList<Position> vacantPosition = new ArrayList<Position>();
+        for (int i=0; i<3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if(position[i][j] == 0){
+                    vacantPosition.add(new Position(i,j));
+                }
+            }
+        }
+        if(vacantPosition.size() > 1) {
+            System.out.println(vacantPosition.size());
+            Random random = new Random();
+            int RandomPosition = random.nextInt(vacantPosition.size()-1);
+            int x = vacantPosition.get(RandomPosition).x;
+            int y = vacantPosition.get(RandomPosition).y;
+            arrButton[x][y].setGraphic(new ImageView(circle));
+            position[x][y] = 1;
+
+
+            for (int i=0; i<3; i++) {
+                for (int j = 0; j < 3; j++)
+                    System.out.print(position[i][j] + " ");
+                System.out.println();
+            }
+
+            System.out.println();
+
+        }else{
+            EndGame();
+        }
+
+    }
+
+    public boolean CheckEndGame(int player){
+        if(
+            (position[0][0] == player && position[0][1] == player && position[0][2] == player) ||
+            (position[1][0] == player && position[1][1] == player && position[1][2] == player) ||
+            (position[2][0] == player && position[2][1] == player && position[2][2] == player) ||
+            (position[0][0] == player && position[1][0] == player && position[2][0] == player) ||
+            (position[0][1] == player && position[1][1] == player && position[2][1] == player) ||
+            (position[0][2] == player && position[1][2] == player && position[2][2] == player) ||
+            (position[0][0] == player && position[1][1] == player && position[2][2] == player) ||
+            (position[0][2] == player && position[1][1] == player && position[2][0] == player)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -98,11 +184,38 @@ public class TicTacToeController {
         SelectAndMoveFigure(2,2);
     }
 
-    public void AlertSuccess(){
+
+    public void StartGame(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Игра завершена !!!");
+        alert.setTitle("Игра началась");
         alert.setHeaderText(null);
-        alert.setContentText("Фигуры переставлены, конец игры.");
+        alert.setContentText("Игра началась");
         alert.showAndWait();
+    }
+
+    public void EndGame(){
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Конец игры");
+        alert.setHeaderText(null);
+        if(winner == 0)
+            alert.setContentText("Победила дружба!");
+        else if(winner == 1)
+            alert.setContentText("Победил компьютер!");
+        else if(winner == 2)
+            alert.setContentText("Вы выграли!");
+
+        alert.showAndWait();
+
+//        for (int i=0; i<3; i++) {
+//            for (int j = 0; j < 3; j++) {
+//                arrButton[i][j].setGraphic(null);
+//                position[0][0] = 0;
+//            }
+//        }
+
+
+
+        gridpane.setDisable(true);
     }
 }

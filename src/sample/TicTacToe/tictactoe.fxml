@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="469.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.TicTacToe.TicTacToeController">
    <children>
-      <GridPane layoutX="116.0" layoutY="54.0">
+      <GridPane fx:id="gridpane" disable="true" layoutX="116.0" layoutY="54.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />

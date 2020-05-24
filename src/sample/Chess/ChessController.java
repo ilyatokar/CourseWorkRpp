@@ -32,7 +32,7 @@ public class ChessController {
     private Integer selectX, selectY, moveX, moveY, figure;
 
     private Image pawnBlack = new Image(getClass().getResourceAsStream("/sample/Chess/images/pawn_black.png"));
-    private Image ferz = new Image(getClass().getResourceAsStream("/sample/Chess/images/elephant_white.png"));
+    private Image ferz = new Image(getClass().getResourceAsStream("/sample/Chess/images/qeen.png"));
 
     @FXML
     public void initialize(){
@@ -113,8 +113,6 @@ public class ChessController {
                 position[x][y] = figure;
                 UpdateDesk();
                 setDataTable(figure, selectX, selectY, moveX, moveY);
-                System.out.println(stepsData.size());
-                System.out.println(figure +" "+ selectX +" "+ selectY +" "+ moveX +" "+ moveY);
                 chessTable.setItems(stepsData);
             }
             ClearSelect();
@@ -150,7 +148,6 @@ public class ChessController {
             AlertSuccess();
             ClearGame();
             stepsData.clear();
-            System.out.println(stepsData.size());
             gridpane.setDisable(true);
         }
     }
