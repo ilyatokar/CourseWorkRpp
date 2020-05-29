@@ -19,7 +19,7 @@
                   <items>
                         <MenuItem mnemonicParsing="false" onAction="#onClickChess" text="Переставь фигуры" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#onClickTicTacToe" text="Крестики-нолики" />
+                        <MenuItem mnemonicParsing="false" onAction="#onClickGuessingGame" text="Угадайка" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                     <MenuItem mnemonicParsing="false" text="Выход" />
                   </items>
